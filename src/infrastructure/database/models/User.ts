@@ -36,7 +36,11 @@ const UsuarioSchema = new Schema({
       vencimiento: Date,
       notaFinal: Number
     }
-  ]
+  ],
+  carreras: [{
+      type: Schema.ObjectId,
+      ref: 'Carrera'
+  }]
 })
 
 export const User = mongoose.model('Usuario', UsuarioSchema)
