@@ -1,36 +1,9 @@
 import { ApolloServer } from "@apollo/server"
 import { startStandaloneServer } from "@apollo/server/standalone"
-import { Carrera } from "./infrastructure/database/models/Carrera.js"
 import { Materia } from "./infrastructure/database/models/Materia.js"
-import { Profesor } from "./infrastructure/database/models/Profesor.js"
-import { User } from "./infrastructure/database/models/User.js"
-import { Comision } from "./infrastructure/database/models/Comision.js"
-import { PlanEstudio } from "./infrastructure/database/models/PlanEstudio.js"
+import { connect } from "./infrastructure/database/connection.js"
 
-const typeDefs = `
-
-  type Materia {
-    nombre: String!
-    codigo: Int!
-  }
-
-  type Usuario {
-    nombre: String
-    apellido: String
-    role: String
-    materia: [Materia]
-  }
-
-  type Query {
-    me: Usuario
-    allUsers: [Usuario]
-  }
-
-  type Mutation {
-    createUser(nombre: String!, apellido: String!): Usuario
-    deleteUser(nombre: String!): Usuario
-  }
-`
+connect()
 
 let users = [
   {
@@ -77,6 +50,39 @@ let users = [
   }
 ]
 
+const typeDefs = `
+  type Materia {
+    _id: String
+    nombre: String!
+    codigo: String!
+    cargaHoraria: Int!
+    electiva: Boolean
+    linkCampus: String
+    linkWhatsapp: String
+    promocion: Boolean
+  }
+
+  type Usuario {
+    nombre: String
+    apellido: String
+    role: String
+    materia: [Materia]
+  }
+
+  type Query {
+    me: Usuario
+    allUsers: [Usuario]
+    materias: [Materia]
+  }
+
+  type Mutation {
+    createUser(nombre: String!, apellido: String!): Usuario
+    deleteUser(nombre: String!): Usuario
+    createMateria(nombre: String!, codigo: String!, cargaHoraria: Int!, electiva: Boolean, linkCampus: String, linkWhatsapp: String, promocion: Boolean): Materia
+    deleteMateria(id: String!): Materia
+  }
+`
+
 const resolvers = {
   Query: {
     me: () => {
@@ -85,25 +91,10 @@ const resolvers = {
     allUsers: () => {
       return users
     },
-    /*
     materias: async () => {
-      return await Materia.find();
-    },
-    carreras: async () => {
-      return await Carrera.find();
-    },
-    professors: async () => {
-      return await Profesor.find();
-    },
-    planestudios: async () => {
-      return await PlanEstudio.find();
-    },
-    comisiones: async () => {
-      return await Comision.find();
-    },
-    users: async () => {
-      return await User.find();
-    }*/
+      const materias = await Materia.find()
+      return materias
+    }
   },
   Mutation: {
     createUser: (root, data) => {
@@ -116,12 +107,24 @@ const resolvers = {
       users.push(user)
       return user
     },
-    deleteUser: ( _root, data) => {
+    deleteUser: (root, data) => {
       const {nombre} = data
       const user = users.find(user => user.nombre === nombre)
       if(!user) throw Error('USUARIO NO ENCONTRADO BOLUDITO')
       users = users.filter(user => user.nombre !== nombre)
       return user
+    },
+    createMateria: async (root, data) => {
+      // Creamos la materia
+      const materia = new Materia(data)
+      // La guardamos en la base de datos
+      await materia.save()
+      return materia
+    },
+    deleteMateria: async (root, data) => {
+      const {id} = data
+      const materia = await Materia.findByIdAndDelete(id)
+      return materia
     }
   }
 }
