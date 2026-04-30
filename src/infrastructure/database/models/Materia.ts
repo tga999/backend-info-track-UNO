@@ -16,19 +16,12 @@ const MateriaSchema = new Schema({
     },
     electiva: { 
         type: Boolean,
-        required: true
+        default: false
     },
-    linkCampus: {
-        type: String,
-        required: true
-    },
-    linkWhatsapp: {
-        type: String,
-        required: true
-    },
+    linkCampus: String,
+    linkWhatsapp: String,
     promocion: {
-        type: Boolean,  
-        required: true,
+        type: Boolean,
         default: false
     }
 });

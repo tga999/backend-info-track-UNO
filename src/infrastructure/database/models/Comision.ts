@@ -10,19 +10,13 @@ const ComisionSchema = new Schema({
         type: String,
         required: true
     },
-    aula: {
-        type: Boolean,
-        required: true,
-        default: true
-    },
-    laboratorio: {
-        type: Boolean,
-        required: true,
-        default: false
+    salon: {
+        numero: Number,
+        tipo: String
     },
     profesores: [{
-        type: String,
-        required: true
+        type: Schema.ObjectId,
+        ref: 'Profesor'
     }] 
 }); 
 

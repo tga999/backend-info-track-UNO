@@ -14,14 +14,6 @@ const ProfesorSchema = new Schema({
         required: true, 
         unique: true
     },
-    password: { 
-        type: String,   
-        required: true
-    },
-    role: {
-        type: String,
-        default: 'profesor'
-    },
     ratings: [
         {
             usuarioId: {
@@ -46,19 +38,14 @@ const ProfesorSchema = new Schema({
         type: String,
         required: true
     },  
-    /*ratingCount: {
+    ratingCount: {
         type: Number,
         default: 0
     }, 
     ratingPromedio: {
-    type: Number,
-    default: 0  
-    },
-    ratingTotal: {
-    type: Number,
-    default: 0
+        type: Number,
+        default: 0  
     }
-    */
 })
 
 export const Profesor = mongoose.model('Profesor', ProfesorSchema)
