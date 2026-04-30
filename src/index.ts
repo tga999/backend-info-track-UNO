@@ -1,5 +1,11 @@
 import { ApolloServer } from "@apollo/server"
 import { startStandaloneServer } from "@apollo/server/standalone"
+import { Carrera } from "./infrastructure/database/models/Carrera.js"
+import { Materia } from "./infrastructure/database/models/Materia.js"
+import { Profesor } from "./infrastructure/database/models/Profesor.js"
+import { User } from "./infrastructure/database/models/User.js"
+import { Comision } from "./infrastructure/database/models/Comision.js"
+import { PlanEstudio } from "./infrastructure/database/models/PlanEstudio.js"
 
 const typeDefs = `
 
@@ -78,7 +84,26 @@ const resolvers = {
     },
     allUsers: () => {
       return users
-    }
+    },
+    /*
+    materias: async () => {
+      return await Materia.find();
+    },
+    carreras: async () => {
+      return await Carrera.find();
+    },
+    professors: async () => {
+      return await Profesor.find();
+    },
+    planestudios: async () => {
+      return await PlanEstudio.find();
+    },
+    comisiones: async () => {
+      return await Comision.find();
+    },
+    users: async () => {
+      return await User.find();
+    }*/
   },
   Mutation: {
     createUser: (root, data) => {
@@ -91,7 +116,7 @@ const resolvers = {
       users.push(user)
       return user
     },
-    deleteUser: (root, data) => {
+    deleteUser: ( _root, data) => {
       const {nombre} = data
       const user = users.find(user => user.nombre === nombre)
       if(!user) throw Error('USUARIO NO ENCONTRADO BOLUDITO')
@@ -101,10 +126,13 @@ const resolvers = {
   }
 }
 
+//Crear server
 const server = new ApolloServer({
   typeDefs,
   resolvers
 })
+
+//Levantar server
 
 const { url } = await startStandaloneServer(server)
 
