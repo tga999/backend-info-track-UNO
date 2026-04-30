@@ -27,7 +27,7 @@ const MateriaSchema = new Schema({
         required: true
     },
     promocion: {
-        type: Boolean,
+        type: Boolean,  
         required: true,
         default: false
     }
