@@ -1,7 +1,7 @@
 import { ApolloServer } from "@apollo/server"
 import { startStandaloneServer } from "@apollo/server/standalone"
-import { Materia } from "./infrastructure/database/models/Materia.js"
-import { connect } from "./infrastructure/database/connection.js"
+import { Materia } from "./database/models/Materia.js"
+import { connect } from "./database/connection.js"
 
 connect()
 
@@ -115,6 +115,8 @@ const resolvers = {
       return user
     },
     createMateria: async (root, data) => {
+      // TODO: VALIDACION DE DATOS
+
       // Creamos la materia
       const materia = new Materia(data)
       // La guardamos en la base de datos
@@ -136,7 +138,6 @@ const server = new ApolloServer({
 })
 
 //Levantar server
-
 const { url } = await startStandaloneServer(server)
 
 console.log('Servidor corriendo en:', url)
