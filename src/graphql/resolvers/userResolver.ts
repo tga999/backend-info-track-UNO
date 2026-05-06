@@ -1,75 +1,62 @@
-let users = [
-  {
-    nombre: 'Ulises',
-    apellido: 'Paz',
-    role: 'admin',
-    materia: [
-      {
-        nombre: 'Análisis Matematico 1',
-        codigo: 123
-      },
-      {
-        nombre: 'Programación Web 1',
-        codigo: 4123
-      },
-      {
-        nombre: 'Trabajo Social Obligatorio',
-        codigo: 123123
-      }
-    ]
-  },
-  {
-    nombre: 'Danyel',
-    apellido: 'Salazar',
-    role: 'user',
-    materia: [
-      {
-        nombre: 'Análisis Matematico 1',
-        codigo: 4124
-      },
-      {
-        nombre: 'Programación Web 1',
-        codigo: 12313
-      },
-      {
-        nombre: 'Economía Ecológica 1',
-        codigo: 51214
-      },
-      {
-        nombre: 'Turismo',
-        codigo: 12143
-      }
-    ]
-  }
-]
+import { User } from "../../database/models/User.js"
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 export const userResolver = () => {
   return {
-    Query: {
-      me: () => {
-        return users[0]
-      },
-      allUsers: () => {
-        return users
-      }
-    },
     Mutation: {
-      createUser: (root, data) => {
-        const {nombre, apellido} = data
-        const user = {
-          nombre: nombre,
-          apellido: apellido,
-          role: 'user'
+      registrarUsuario: async (root, data) => {
+        // TODO: Validar datos
+
+        // Comprobar si ya existe un usuario con el mismo mail
+        const userExiste = await User.findOne({email: data.email})
+        if(userExiste) {
+          throw new Error('Usuario existente')
         }
-        users.push(user)
+        
+        // Cifrar la contraseña
+        const passwordCifrada = bcrypt.hashSync(data.password, 10)
+        
+        // Guardamos usuario en la base de datos
+        const user = new User({
+          nombre: data.nombre,
+          apellido: data.apellido,
+          email: data.email,
+          password: passwordCifrada
+        })
+
+        await user.save()
+
         return user
       },
-      deleteUser: (root, data) => {
-        const {nombre} = data
-        const user = users.find(user => user.nombre === nombre)
-        if(!user) throw Error('USUARIO NO ENCONTRADO BOLUDITO')
-        users = users.filter(user => user.nombre !== nombre)
-        return user
+      loguearUsuario: async (root, data) => {
+        // TODO: VALIDAR DATOS
+
+        // Validar que exista el usuario
+        const userExiste = await User.findOne({email: data.email})
+        if(!userExiste) {
+          throw new Error('Usuario no existe')
+        }
+
+        // Validar la contraseña
+        const passwordValidada = bcrypt.compareSync(data.password, userExiste.password)
+        
+        if(!passwordValidada) {
+          throw new Error('Contraseña incorrecta')
+        }
+
+        
+        // Crear token
+        const privateKey = process.env.SECRET_KEY
+        if(!privateKey) {
+          throw new Error('Internal server error: No hay private key')
+        }
+        const token = jwt.sign({id: userExiste._id, role: userExiste.role}, privateKey)
+        
+        return token
       }
     }
   }

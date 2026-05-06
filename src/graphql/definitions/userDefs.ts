@@ -1,20 +1,17 @@
 export const userDefs = () => {
   return `
     type Usuario {
-      nombre: String
-      apellido: String
+      _id: String!
+      nombre: String!
+      apellido: String!
+      email: String!
       role: String
       materia: [Materia]
     }
 
-    type Query {
-      me: Usuario
-      allUsers: [Usuario]
-    }
-
     type Mutation {
-      createUser(nombre: String!, apellido: String!): Usuario
-      deleteUser(nombre: String!): Usuario
+      registrarUsuario(nombre: String!, apellido: String!, password: String!, email: String!): Usuario
+      loguearUsuario(email: String!, password: String!): String
     }
   `
 }
