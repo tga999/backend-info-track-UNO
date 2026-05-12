@@ -1,3 +1,4 @@
+import type { LoginUser, RegisterUser } from "../../types/user.js"
 import { User } from "../../database/models/User.js"
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
@@ -8,14 +9,12 @@ dotenv.config()
 export const userResolver = () => {
   return {
     Mutation: {
-      registrarUsuario: async (root, data) => {
+      registrarUsuario: async (_: unknown, data: RegisterUser) => {
         // TODO: Validar datos
-
+        
         // Comprobar si ya existe un usuario con el mismo mail
         const userExiste = await User.findOne({email: data.email})
-        if(userExiste) {
-          throw new Error('Usuario existente')
-        }
+        if(userExiste) throw new Error('Usuario existente')
         
         // Cifrar la contraseña
         const passwordCifrada = bcrypt.hashSync(data.password, 10)
@@ -28,35 +27,24 @@ export const userResolver = () => {
           password: passwordCifrada
         })
 
-        await user.save()
-
-        return user
+        return await user.save()
       },
-      loguearUsuario: async (root, data) => {
+      loguearUsuario: async (_: unknown, data: LoginUser) => {
         // TODO: VALIDAR DATOS
 
         // Validar que exista el usuario
         const userExiste = await User.findOne({email: data.email})
-        if(!userExiste) {
-          throw new Error('Usuario no existe')
-        }
+        if(!userExiste) throw new Error('Usuario no existe')
 
         // Validar la contraseña
         const passwordValidada = bcrypt.compareSync(data.password, userExiste.password)
-        
-        if(!passwordValidada) {
-          throw new Error('Contraseña incorrecta')
-        }
-
+        if(!passwordValidada) throw new Error('Contraseña incorrecta')
         
         // Crear token
-        const privateKey = process.env.SECRET_KEY
-        if(!privateKey) {
-          throw new Error('Internal server error: No hay private key')
-        }
-        const token = jwt.sign({id: userExiste._id, role: userExiste.role}, privateKey)
-        
-        return token
+        const privateKey = process.env.JWT_SECRET
+        if(!privateKey) throw new Error('Internal server error: No hay private key')
+
+        return jwt.sign({id: userExiste._id, role: userExiste.role}, privateKey)
       }
     }
   }

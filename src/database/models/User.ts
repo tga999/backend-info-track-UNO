@@ -32,7 +32,7 @@ const UsuarioSchema = new Schema({
         type: String,
         required: true
       },
-      llamadosUsadas: Number,
+      llamadosUsados: Number,
       vencimiento: Date,
       notaFinal: Number
     }
