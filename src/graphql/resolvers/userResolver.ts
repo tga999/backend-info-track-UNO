@@ -3,14 +3,16 @@ import { User } from "../../database/models/User.js"
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
+import { validateLoginInput, validateRegisterInput } from "../../validators/userValidator.js"
 
 dotenv.config()
 
 export const userResolver = () => {
   return {
     Mutation: {
-      registrarUsuario: async (_: unknown, data: RegisterUser) => {
-        // TODO: Validar datos
+      registrarUsuario: async (_: unknown, args: RegisterUser) => {
+        // Validar datos
+        const data = validateRegisterInput(args)
         
         // Comprobar si ya existe un usuario con el mismo mail
         const userExiste = await User.findOne({email: data.email})
@@ -29,8 +31,9 @@ export const userResolver = () => {
 
         return await user.save()
       },
-      loguearUsuario: async (_: unknown, data: LoginUser) => {
-        // TODO: VALIDAR DATOS
+      loguearUsuario: async (_: unknown, args: LoginUser) => {
+        // Validar datos
+        const data = validateLoginInput(args)
 
         // Validar que exista el usuario
         const userExiste = await User.findOne({email: data.email})
