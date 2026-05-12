@@ -4,12 +4,6 @@ export const planEstudioDefs = () => {
             _id: String!
             nombre: String!
             materias: [Materia]
-        },  
-        type Query {
-
-        },
-        type Mutation {
-    
         }
     `
 }

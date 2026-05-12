@@ -11,9 +11,5 @@ export const carreraDefs = () => {
     type Query {
         carreras: [Carrera]
     }
-    type Mutation {
-
-    }  
-  ` 
-  
+` 
 }

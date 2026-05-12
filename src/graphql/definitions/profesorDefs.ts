@@ -6,12 +6,6 @@ export const profesorDefs = () =>{
             apellido: String!
             email: String!
             materia: [Materia]
-        },
-        type Query {
-            
-        },
-        type Mutation {
-
         }
     `
 }
