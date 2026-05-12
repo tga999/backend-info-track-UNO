@@ -7,7 +7,7 @@ export const comisionDefs = () => {
 
     type Salon {
       numero: Int!
-      tipo: SalonType
+      tipo: SalonType!
     }
 
     type Comision {

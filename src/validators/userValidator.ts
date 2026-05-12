@@ -1,6 +1,7 @@
 import { GraphQLError } from 'graphql'
 import * as z from 'zod'
 
+// Esquemas
 const UserRegister = z.object({
   nombre: z.string().trim()
     .min(3, 'Debe contener más de 3 caracteres')
@@ -21,6 +22,7 @@ const UserLogin = z.object({
   password: z.string().min(1, 'Contraseña requerida')
 })
 
+// Validators
 export const validateRegisterInput = (input: unknown) => {
   const result = z.safeParse(UserRegister, input)
   if(!result.success) {

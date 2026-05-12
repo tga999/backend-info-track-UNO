@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
 import { validateLoginInput, validateRegisterInput } from "../../validators/userValidator.js"
+import { GraphQLError } from "graphql"
 
 dotenv.config()
 
@@ -16,7 +17,9 @@ export const userResolver = () => {
         
         // Comprobar si ya existe un usuario con el mismo mail
         const userExiste = await User.findOne({email: data.email})
-        if(userExiste) throw new Error('Usuario existente')
+        if(userExiste) throw new GraphQLError('El usuario ya existe', {
+          extensions: {code: 'USER_ALREADY_EXISTS'}
+        })
         
         // Cifrar la contraseña
         const passwordCifrada = bcrypt.hashSync(data.password, 10)
@@ -37,15 +40,19 @@ export const userResolver = () => {
 
         // Validar que exista el usuario
         const userExiste = await User.findOne({email: data.email})
-        if(!userExiste) throw new Error('Usuario no existe')
+        if(!userExiste) throw new GraphQLError('Usuario no existe', {
+          extensions: { code: 'USER_NOT_FOUND' }
+        })
 
         // Validar la contraseña
         const passwordValidada = bcrypt.compareSync(data.password, userExiste.password)
-        if(!passwordValidada) throw new Error('Contraseña incorrecta')
+        if(!passwordValidada) throw new GraphQLError('Contraseña incorrecta', {
+          extensions: {code: 'INVALID_CREDENTIALS'}
+        })
         
         // Crear token
         const privateKey = process.env.JWT_SECRET
-        if(!privateKey) throw new Error('Internal server error: No hay private key')
+        if(!privateKey) throw new Error('Error al cargar variables de entorno')
 
         return jwt.sign({id: userExiste._id, role: userExiste.role}, privateKey)
       }
