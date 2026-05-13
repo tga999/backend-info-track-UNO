@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose"
+import { required } from "zod/mini"
 
 const UsuarioSchema = new Schema({
   nombre: {
@@ -30,6 +31,14 @@ const UsuarioSchema = new Schema({
       },
       estado: {
         type: String,
+        required: true
+      },
+      year: {
+        type: Number,
+        required: true
+      },
+      cuatrimestre: {
+        type: Number,
         required: true
       },
       llamadosUsados: Number,

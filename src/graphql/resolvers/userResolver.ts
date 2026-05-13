@@ -1,10 +1,11 @@
-import type { LoginUser, RegisterUser } from "../../types/user.js"
+import type { EstablecerEstadoMateria, LoginUser, RegisterUser } from "../../types/user.js"
 import { User } from "../../database/models/User.js"
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
 import { validateLoginInput, validateRegisterInput } from "../../validators/userValidator.js"
 import { GraphQLError } from "graphql"
+import { Materia } from "../../database/models/Materia.js"
 
 dotenv.config()
 
@@ -61,6 +62,43 @@ export const userResolver = () => {
         if(!privateKey) throw new Error('Error al cargar variables de entorno')
 
         return jwt.sign({id: userExiste._id, role: userExiste.role}, privateKey)
+      },
+      establecerEstadoMateria: async (_: unknown, args: EstablecerEstadoMateria, context) => {
+        // Verificamos que este logueado
+        if(!context.currentUser) throw new GraphQLError('Usuario no identificado', {
+          extensions: {code: "UNAUTHORIZED"}
+        })
+
+        // TODO: Validar Inputs
+
+        // Validamos que exista la materia
+        try {
+          const materia = await Materia.findById(args.idMateria)
+          if(!materia) throw new GraphQLError('La materia no existe', {
+            extensions: {code: "MATERIA_NOT_FOUND"}
+          })
+        } catch(error) {
+          throw new GraphQLError('La materia no existe', {
+            extensions: {code: "MATERIA_NOT_FOUND"}
+          })
+        }
+        
+        // TODO: AGREGAR VENCIMIENTO Y LLAMADOS USADOS
+        // Crear estado de materia en el usuario
+        const user = await User.findByIdAndUpdate(context.currentUser.id, {
+          $push: {
+            materias: {
+              materiaId: args.idMateria,
+              estado: args.estado,
+              notaFinal: args.nota,
+              year: args.year,
+              cuatrimestre: args.cuatrimestre
+            }
+          }
+        }, {new: true})
+
+        console.log(user)
+        return user
       }
     }
   }
