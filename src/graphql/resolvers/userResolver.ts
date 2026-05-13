@@ -3,7 +3,7 @@ import { User } from "../../database/models/User.js"
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
-import { validateLoginInput, validateRegisterInput } from "../../validators/userValidator.js"
+import { validateLoginInput, validateRegisterInput, validateEstadoMateriaInput } from "../../validators/userValidator.js"
 import { GraphQLError } from "graphql"
 import { Materia } from "../../database/models/Materia.js"
 
@@ -69,11 +69,13 @@ export const userResolver = () => {
           extensions: {code: "UNAUTHORIZED"}
         })
 
-        // TODO: Validar Inputs
-
+        // Validar datos
+        const data = validateEstadoMateriaInput(args)
+        // Validar Inputs 
+        
         // Validamos que exista la materia
         try {
-          const materia = await Materia.findById(args.idMateria)
+          const materia = await Materia.findById(data.idMateria)
           if(!materia) throw new GraphQLError('La materia no existe', {
             extensions: {code: "MATERIA_NOT_FOUND"}
           })
@@ -88,11 +90,11 @@ export const userResolver = () => {
         const user = await User.findByIdAndUpdate(context.currentUser.id, {
           $push: {
             materias: {
-              materiaId: args.idMateria,
-              estado: args.estado,
-              notaFinal: args.nota,
-              year: args.year,
-              cuatrimestre: args.cuatrimestre
+              materiaId: data.idMateria,
+              estado: data.estado,
+              notaFinal: data.nota,
+              year: data.year,
+              cuatrimestre: data.cuatrimestre
             }
           }
         }, {new: true})
