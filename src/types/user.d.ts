@@ -1,4 +1,24 @@
-// Inputs en mutation
+export type IUser = {
+  id: string
+  nombre: string
+  apellido: string
+  password: string
+  email: string
+  role: string
+  materias: MateriaUser[]
+  carreras: string[]
+}
+
+type MateriaUser = {
+  materiaId: string
+  estado: EstadoMateria
+  year: number
+  cuatrimestre: number
+  llamadosUsados?: number
+  vencimiento?: Date
+  notaFinal?: number
+}
+
 enum EstadoMateria {
   APROBADO = "aprobado",
   REGULARIZADA = "regularizada",
@@ -6,6 +26,7 @@ enum EstadoMateria {
   PROMOCIONADA = "promocionada"
 }
 
+// Inputs en mutation
 export type RegisterUser = {
   nombre: string
   apellido: string

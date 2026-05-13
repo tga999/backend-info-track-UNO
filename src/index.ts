@@ -16,6 +16,7 @@ import { planEstudioResolver } from "./graphql/resolvers/planEstudioResolver.js"
 import { profesorDefs } from "./graphql/definitions/profesorDefs.js"
 import { profesorResolver } from "./graphql/resolvers/profesorResolver.js"
 import { User } from "./database/models/User.js"
+import type { JwtPayload } from "./types/auth.js"
 
 connect()
 
@@ -48,9 +49,15 @@ const server = new ApolloServer({
 //Levantar server
 const { url } = await startStandaloneServer(server, {
   context: async ({req}) => {
+    // Recibir token de la cabecera de la request
     const token = req.headers.authorization
     if (token) {
-      const {id} = jwt.verify(token, process.env.JWT_SECRET)
+      // Cargar variable de entorno
+      const secretKey = process.env.JWT_SECRET
+      if(!secretKey) throw new Error('Secret key no cargada')
+      // Decodificar token
+      const {id} = jwt.verify(token, secretKey) as JwtPayload
+      // Buscar usuario y retornarlo
       const user = await User.findById(id);
       return { currentUser: user }
     }

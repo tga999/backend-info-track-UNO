@@ -6,13 +6,14 @@ import dotenv from 'dotenv'
 import { validateLoginInput, validateRegisterInput, validateEstadoMateriaInput } from "../../validators/userValidator.js"
 import { GraphQLError } from "graphql"
 import { Materia } from "../../database/models/Materia.js"
+import type { Context } from "../../types/auth.js"
 
 dotenv.config()
 
 export const userResolver = () => {
   return {
     Query: {
-      me: (root, args, context) => {
+      me: (root: unknown, args: unknown, context: Context) => {
         if(!context.currentUser) throw new Error('USUARIO NO IDENTIFICADO')
         return context.currentUser
       }
@@ -61,17 +62,16 @@ export const userResolver = () => {
         const privateKey = process.env.JWT_SECRET
         if(!privateKey) throw new Error('Error al cargar variables de entorno')
 
-        return jwt.sign({id: userExiste._id, role: userExiste.role}, privateKey)
+        return jwt.sign({id: userExiste._id}, privateKey)
       },
-      establecerEstadoMateria: async (_: unknown, args: EstablecerEstadoMateria, context) => {
+      establecerEstadoMateria: async (_: unknown, args: EstablecerEstadoMateria, context: Context) => {
         // Verificamos que este logueado
         if(!context.currentUser) throw new GraphQLError('Usuario no identificado', {
           extensions: {code: "UNAUTHORIZED"}
         })
 
-        // Validar datos
+        // Validar Inputs
         const data = validateEstadoMateriaInput(args)
-        // Validar Inputs 
         
         // Validamos que exista la materia
         try {
