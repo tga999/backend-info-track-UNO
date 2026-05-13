@@ -22,6 +22,24 @@ const UserLogin = z.object({
   password: z.string().min(1, 'Contraseña requerida')
 })
 
+const EstadoMateria = z.object({
+
+  idMateria: z.string()
+    .regex(/^[0-9a-fA-F]{24}$/,'ID de materia inválido'),
+  estado: 
+    z.enum(['APROBADA','REGULARIZADA','CURSANDO','PROMOCIONADA']),
+  nota: z.number()
+    .min(1, 'La nota mínima es 1')
+    .max(10, 'La nota máxima es 10')
+    .optional(),
+  year: z.number()
+    .min(2009, 'Año inválido')
+    .max(2026, 'Año inválido'),
+  cuatrimestre: z.number()
+    .min(1, 'Cuatrimestre inválido')
+    .max(2, 'Cuatrimestre inválido')
+})
+
 // Validators
 export const validateRegisterInput = (input: unknown) => {
   const result = z.safeParse(UserRegister, input)
@@ -45,6 +63,26 @@ export const validateRegisterInput = (input: unknown) => {
 
 export const validateLoginInput = (input: unknown) => {
   const result = z.safeParse(UserLogin, input)
+  if(!result.success) {
+    // Formatear los errores
+    const errors = result.error.issues.map(issue => ({
+      field: issue.path[0],
+      message: issue.message
+    }))
+
+    // Tirar error de graphql
+    throw new GraphQLError('Error de validación', {
+      extensions: {
+        code: 'VALIDATION_ERROR',
+        errors
+      }
+    })
+  }
+  return result.data
+}
+
+export const validateEstadoMateriaInput = (input: unknown) => {
+  const result = EstadoMateria.safeParse(input)
   if(!result.success) {
     // Formatear los errores
     const errors = result.error.issues.map(issue => ({
