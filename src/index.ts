@@ -1,3 +1,5 @@
+import jwt from "jsonwebtoken"
+import dotenv from "dotenv"
 import { ApolloServer } from "@apollo/server"
 import { startStandaloneServer } from "@apollo/server/standalone"
 import { connect } from "./database/connection.js"
@@ -13,8 +15,11 @@ import { planEstudioDefs } from "./graphql/definitions/planEstudioDefs.js"
 import { planEstudioResolver } from "./graphql/resolvers/planEstudioResolver.js"
 import { profesorDefs } from "./graphql/definitions/profesorDefs.js"
 import { profesorResolver } from "./graphql/resolvers/profesorResolver.js"
+import { User } from "./database/models/User.js"
 
 connect()
+
+dotenv.config()
 
 const typeDefs = [
   userDefs(),
@@ -41,6 +46,16 @@ const server = new ApolloServer({
 })
 
 //Levantar server
-const { url } = await startStandaloneServer(server)
+const { url } = await startStandaloneServer(server, {
+  context: async ({req}) => {
+    const token = req.headers.authorization
+    if (token) {
+      const {id} = jwt.verify(token, process.env.JWT_SECRET)
+      const user = await User.findById(id);
+      return { currentUser: user }
+    }
+    return {}
+  }
+})
 
 console.log('Servidor corriendo en:', url)

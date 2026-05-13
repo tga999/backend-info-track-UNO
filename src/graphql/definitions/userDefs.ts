@@ -1,12 +1,21 @@
 export const userDefs = () => {
   return `
+    enum UserRole {
+      ADMIN
+      USER
+    }
+
     type Usuario {
       _id: String!
       nombre: String!
       apellido: String!
       email: String!
-      role: String
+      role: UserRole!
       materia: [Materia]
+    }
+
+    type Query {
+      me: Usuario
     }
 
     type Mutation {

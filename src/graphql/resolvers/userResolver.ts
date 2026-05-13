@@ -10,6 +10,12 @@ dotenv.config()
 
 export const userResolver = () => {
   return {
+    Query: {
+      me: (root, args, context) => {
+        if(!context.currentUser) throw new Error('USUARIO NO IDENTIFICADO')
+        return context.currentUser
+      }
+    },
     Mutation: {
       registrarUsuario: async (_: unknown, args: RegisterUser) => {
         // Validar datos
