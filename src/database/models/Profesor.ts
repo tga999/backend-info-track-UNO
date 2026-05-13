@@ -45,7 +45,11 @@ const ProfesorSchema = new Schema({
     ratingPromedio: {
         type: Number,
         default: 0  
-    }
+    },
+    materias: [{
+        type: Schema.ObjectId,
+        ref: 'Materia'
+    }]
 })
 
 export const Profesor = mongoose.model('Profesor', ProfesorSchema)

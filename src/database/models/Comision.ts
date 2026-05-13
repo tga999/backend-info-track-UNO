@@ -13,11 +13,7 @@ const ComisionSchema = new Schema({
     salon: {
         numero: Number,
         tipo: String
-    },
-    profesores: [{
-        type: Schema.ObjectId,
-        ref: 'Profesor'
-    }] 
+    }
 }); 
 
 export const Comision = mongoose.model('Comision', ComisionSchema);
