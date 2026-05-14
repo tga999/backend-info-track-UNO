@@ -1,5 +1,26 @@
 import mongoose, { Schema } from "mongoose"
-import { required } from "zod/mini"
+
+const MateriaUsuarioSchema = new Schema({
+  materiaId: {
+    type: Schema.ObjectId,
+    ref: 'Materia'
+  },
+  estado: {
+    type: String,
+    required: true
+  },
+  year: {
+    type: Number,
+    required: true
+  },
+  cuatrimestre: {
+    type: Number,
+    required: true
+  },
+  llamadosUsados: Number,
+  vencimiento: Date,
+  notaFinal: Number
+})
 
 const UsuarioSchema = new Schema({
   nombre: {
@@ -23,29 +44,7 @@ const UsuarioSchema = new Schema({
     type: String,
     default: 'user'
   },
-  materias: [
-    {
-      materiaId: {
-        type: Schema.ObjectId,
-        ref: 'Materia'
-      },
-      estado: {
-        type: String,
-        required: true
-      },
-      year: {
-        type: Number,
-        required: true
-      },
-      cuatrimestre: {
-        type: Number,
-        required: true
-      },
-      llamadosUsados: Number,
-      vencimiento: Date,
-      notaFinal: Number
-    }
-  ],
+  materias: [MateriaUsuarioSchema],
   carreras: [{
       type: Schema.ObjectId,
       ref: 'Carrera'
