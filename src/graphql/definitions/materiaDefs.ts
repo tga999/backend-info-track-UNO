@@ -1,10 +1,10 @@
 export const materiaDefs = () => {
   return `
     type Materia {
-      _id: String
+      id: ID!
       nombre: String!
-      codigo: String!
-      cargaHoraria: Int!
+      cargaHorariaTotal: Int!
+      cargaHorariaSemanal: Int!
       electiva: Boolean
       linkCampus: String
       linkWhatsapp: String

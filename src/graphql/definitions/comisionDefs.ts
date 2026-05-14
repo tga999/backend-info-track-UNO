@@ -11,11 +11,13 @@ export const comisionDefs = () => {
     }
 
     type Comision {
-        _id: String!
+        id: ID!
         materia: Materia!
         horario: String!
         salon: Salon
         profesores: [Profesor]
+        year: Int!
+        cuatrimestre: Int!
     }
   `     
 }   

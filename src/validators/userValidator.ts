@@ -24,8 +24,7 @@ const UserLogin = z.object({
 
 const EstadoMateria = z.object({
 
-  idMateria: z.string()
-    .regex(/^[0-9a-fA-F]{24}$/,'ID de materia inválido'),
+  idMateria: z.string(),
   estado: 
     z.enum(['APROBADA','REGULARIZADA','CURSANDO','PROMOCIONADA']),
   nota: z.number()

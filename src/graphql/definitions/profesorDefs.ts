@@ -1,11 +1,19 @@
 export const profesorDefs = () =>{
     return `
+        type Rating {
+            userId: String!
+            puntuacion: Float!
+            comentario: String
+        }
+
         type Profesor {
-            _id: String!
+            id: ID!
             nombre: String!
             apellido: String!
             email: String!
-            materia: [Materia]
+            linkCampus: String
+            ratings: [Rating]
+            materias: [Materia]!
         }
     `
 }

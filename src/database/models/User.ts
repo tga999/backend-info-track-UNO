@@ -2,8 +2,9 @@ import mongoose, { Schema } from "mongoose"
 
 const MateriaUsuarioSchema = new Schema({
   materiaId: {
-    type: Schema.ObjectId,
-    ref: 'Materia'
+    type: String,
+    ref: 'Materia',
+    required: true
   },
   estado: {
     type: String,

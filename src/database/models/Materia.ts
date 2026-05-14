@@ -1,16 +1,17 @@
 import mongoose, { Schema } from 'mongoose';
+import { string } from 'zod';
 
 const MateriaSchema = new Schema({
+    _id: String,
     nombre: {
         type: String,
         required: true
     },
-    codigo: {
-        type: String,
-        required: true,
-        unique: true
+    cargaHorariaSemanal:{
+        type: Number,
+        required: true
     },
-    cargaHoraria: {
+    cargaHorariaTotal: {
         type: Number,
         required: true 
     },

@@ -103,7 +103,7 @@ export const userResolver = () => {
         if(!user) throw new GraphQLError('Usuario no encontrado', {extensions: {code: 'USER_NOT_FOUND'}})
 
         // Buscamos si existe estado de materia en el usuario
-        const materiaIndex = user.materias.findIndex(materia => materia.materiaId?.toString() === data.idMateria)
+        const materiaIndex = user.materias?.findIndex(materia => materia.materiaId?.toString() === data.idMateria)
 
         if(materiaIndex === -1) {
           // No existe la materia en el usuario

@@ -1,7 +1,7 @@
 export const carreraDefs = () => {
     return `
     type Carrera {
-        _id: String
+        id: ID!
         nombre: String!
         duracion: Int!
         descripcion: String!
