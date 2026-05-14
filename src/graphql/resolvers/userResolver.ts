@@ -1,12 +1,12 @@
-import type { EstablecerEstadoMateria, LoginUser, RegisterUser } from "../../types/user.js"
-import { User } from "../../database/models/User.js"
+import type { EstablecerEstadoMateria, EstadoMateria, LoginUser, MateriaUser, RegisterUser } from "../../types/user.js"
+import type { Context } from "../../types/auth.js"
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
-import { validateLoginInput, validateRegisterInput, validateEstadoMateriaInput } from "../../validators/userValidator.js"
 import { GraphQLError } from "graphql"
+import { User } from "../../database/models/User.js"
 import { Materia } from "../../database/models/Materia.js"
-import type { Context } from "../../types/auth.js"
+import { validateLoginInput, validateRegisterInput, validateEstadoMateriaInput } from "../../validators/userValidator.js"
 
 dotenv.config()
 
@@ -66,40 +66,53 @@ export const userResolver = () => {
       },
       establecerEstadoMateria: async (_: unknown, args: EstablecerEstadoMateria, context: Context) => {
         // Verificamos que este logueado
-        if(!context.currentUser) throw new GraphQLError('Usuario no identificado', {
-          extensions: {code: "UNAUTHORIZED"}
-        })
+        if(!context.currentUser) throw new GraphQLError('Usuario no identificado', {extensions: {code: "UNAUTHORIZED"}})
 
         // Validar Inputs
         const data = validateEstadoMateriaInput(args)
-        
-        // Validamos que exista la materia
-        try {
-          const materia = await Materia.findById(data.idMateria)
-          if(!materia) throw new GraphQLError('La materia no existe', {
-            extensions: {code: "MATERIA_NOT_FOUND"}
-          })
-        } catch(error) {
-          throw new GraphQLError('La materia no existe', {
-            extensions: {code: "MATERIA_NOT_FOUND"}
-          })
-        }
-        
-        // TODO: AGREGAR VENCIMIENTO Y LLAMADOS USADOS
-        // Crear estado de materia en el usuario
-        const user = await User.findByIdAndUpdate(context.currentUser.id, {
-          $push: {
-            materias: {
-              materiaId: data.idMateria,
-              estado: data.estado,
-              notaFinal: data.nota,
-              year: data.year,
-              cuatrimestre: data.cuatrimestre
-            }
-          }
-        }, {new: true})
 
-        console.log(user)
+        // Validamos que exista la materia
+        const materia = await Materia.findById(data.idMateria)
+        if(!materia) throw new GraphQLError('La materia no existe', {extensions: {code: "MATERIA_NOT_FOUND"}})
+
+        // Creamos la nueva materia
+        const newMateria: MateriaUser = {
+          materiaId: data.idMateria,
+          estado: data.estado as EstadoMateria,
+          cuatrimestre: data.cuatrimestre,
+          year: data.year,
+          notaFinal: null,
+          llamadosUsados: null,
+          vencimiento: null
+        }
+
+        // Agregar datos si el estado es regularizada
+        if(data.estado === "REGULARIZADA") {
+          newMateria.llamadosUsados = 0
+          newMateria.vencimiento = new Date(data.year + 2, data.cuatrimestre === 1 ? 7 : 12, 1)
+        }
+
+        // Agregar datos si el estado es aprobada o promocionada
+        if(data.estado === "APROBADA" || data.estado === "PROMOCIONADA") {
+          if(!data.nota) throw new GraphQLError('Debes ingresar una nota numérica', {extensions: {code: 'MISSING_ARGUMENT'}})
+          newMateria.notaFinal = data.nota
+        }
+
+        // Buscamos el usuario
+        const user = await User.findById(context.currentUser.id)
+        if(!user) throw new GraphQLError('Usuario no encontrado', {extensions: {code: 'USER_NOT_FOUND'}})
+
+        // Buscamos si existe estado de materia en el usuario
+        const materiaIndex = user.materias.findIndex(materia => materia.materiaId?.toString() === data.idMateria)
+
+        if(materiaIndex === -1) {
+          // No existe la materia en el usuario
+          user.materias.push(newMateria)
+        } else {
+          user.materias[materiaIndex]?.set(newMateria)
+        }
+
+        await user.save()
         return user
       }
     }

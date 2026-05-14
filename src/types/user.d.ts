@@ -14,16 +14,16 @@ type MateriaUser = {
   estado: EstadoMateria
   year: number
   cuatrimestre: number
-  llamadosUsados?: number
-  vencimiento?: Date
-  notaFinal?: number
+  llamadosUsados?: number | null
+  vencimiento?: Date | null
+  notaFinal?: number | null
 }
 
 enum EstadoMateria {
-  APROBADO = "aprobado",
-  REGULARIZADA = "regularizada",
-  CURSANDO = "cursando",
-  PROMOCIONADA = "promocionada"
+  APROBADA = "APROBADA",
+  REGULARIZADA = "REGULARIZADA",
+  CURSANDO = "CURSANDO",
+  PROMOCIONADA = "PROMOCIONADA"
 }
 
 // Inputs en mutation
@@ -44,5 +44,5 @@ export type EstablecerEstadoMateria = {
   estado: EstadoMateria
   year: number
   cuatrimestre: number
-  nota?: number 
+  nota?: number | null
 }

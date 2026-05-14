@@ -14,15 +14,17 @@ export const userDefs = () => {
     }
 
     type MateriaUsuario {
-      materiaId: String!
+      materiaId: ID!
       year: Int!
       cuatrimestre: Int!
       notaFinal: Int
-      estado: EstadoMateria
+      estado: EstadoMateria!
+      llamadosUsados: Int
+      vencimiento: String
     }
 
     type Usuario {
-      _id: String!
+      id: ID!
       nombre: String!
       apellido: String!
       email: String!
