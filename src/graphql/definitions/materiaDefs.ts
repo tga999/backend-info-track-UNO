@@ -3,8 +3,8 @@ export const materiaDefs = () => {
     type Materia {
       id: ID!
       nombre: String!
-      cargaHorariaTotal: Int!
-      cargaHorariaSemanal: Int!
+      cargaHorariaTotal: Int
+      cargaHorariaSemanal: Int
       electiva: Boolean
       linkCampus: String
       linkWhatsapp: String
@@ -12,7 +12,7 @@ export const materiaDefs = () => {
     }
 
     type Query {
-      materias: [Materia]
+      materias(search: String, page: Int, limit: Int): [Materia]
     }
 
     type Mutation {
