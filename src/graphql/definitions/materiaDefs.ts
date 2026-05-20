@@ -9,6 +9,8 @@ export const materiaDefs = () => {
       linkCampus: String
       linkWhatsapp: String
       promocion: Boolean
+      carreras: [Carrera]
+      comisiones: [Comision]
     }
 
     type Query {

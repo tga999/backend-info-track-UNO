@@ -1,4 +1,5 @@
 import { Materia } from "../../database/models/Materia.js"
+import { PlanEstudio } from "../../database/models/PlanEstudio.js"
 import type { IMateria, SearchMateriaInput } from "../../types/materia.js"
 
 export const materiaResolver = () => {
@@ -38,6 +39,13 @@ export const materiaResolver = () => {
         const {id} = data
         const materia = await Materia.findByIdAndDelete(id)
         return materia
+      }
+    },
+    Materia: {
+      carreras: async (root: IMateria) => {
+        const planEstudio = await PlanEstudio.find({materiaId: root.id}).populate("carreraId")
+        const carreras = planEstudio.map(pe => pe.carreraId)
+        return carreras
       }
     }
   }
