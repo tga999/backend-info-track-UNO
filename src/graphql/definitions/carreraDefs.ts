@@ -7,6 +7,7 @@ export const carreraDefs = () => {
         descripcion: String!
         tituloOtorgado: String!
         cargaHorariaTotal: Int!
+        materias: [Materia]
     }
     type Query {
         carreras: [Carrera]
