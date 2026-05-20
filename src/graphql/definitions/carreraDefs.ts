@@ -10,6 +10,7 @@ export const carreraDefs = () => {
     }
     type Query {
         carreras: [Carrera]
+        carrera(id: ID!): Carrera
     }
 ` 
 }

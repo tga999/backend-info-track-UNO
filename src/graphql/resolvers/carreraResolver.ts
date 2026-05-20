@@ -6,6 +6,9 @@ export const carreraResolver = () => {
             carreras: async () => { 
                 const carreras = await Carrera.find()
                 return carreras
+            },
+            carrera: async (_root: undefined, args: {id: string}) => {
+                return await Carrera.findById(args.id)
             }
         },
         Mutation: {
