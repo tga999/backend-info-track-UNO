@@ -6,13 +6,35 @@ const ComisionSchema = new Schema({
         ref: 'Materia',
         required: true
     },
-    horario: {
-        type: String,
-        required: true
-    },
+    horarios: [
+        {
+            dia: {
+                type: String,
+                enum: ["LUNES", "MARTES", "MIERCOLES", "JUEVES", "VIERNES", "SABADO"]
+            },
+            horaInicio: String,
+            horaFin: String
+        }
+    ],
     salon: {
         numero: Number,
-        tipo: String
+        tipo: {
+            type: String,
+            enum: ["LABORATORIO", "AULA"]
+        }
+    },
+    anio: {
+        type: Number,
+        required: true
+    },
+    cuatrimestre: {
+        type: Number,
+        required: true
+    },
+    modalidad: {
+        type: String,
+        enum: ["VIRTUAL", "PRESENCIAL", "SEMIPRESENCIAL"],
+        default: "PRESENCIAL"
     }
 }); 
 

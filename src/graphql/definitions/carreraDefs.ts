@@ -1,5 +1,12 @@
 export const carreraDefs = () => {
     return `
+    type MateriaCarrera {
+        materia: Materia!
+        anio: Int!
+        cuatrimestre: Int!
+        correlativas: [Materia]
+    }
+
     type Carrera {
         id: ID!
         nombre: String!
@@ -7,8 +14,9 @@ export const carreraDefs = () => {
         descripcion: String!
         tituloOtorgado: String!
         cargaHorariaTotal: Int!
-        materias: [Materia]
+        materias: [MateriaCarrera]
     }
+
     type Query {
         carreras: [Carrera]
         carrera(id: ID!): Carrera

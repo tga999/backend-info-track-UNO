@@ -8,14 +8,14 @@ export const userDefs = () => {
       PROMOCIONADA
     }
 
-    enum UserRole {
-      ADMIN
+    enum RolUsuario {
       USER
+      ADMIN
     }
 
     type MateriaUsuario {
-      materiaId: ID!
-      year: Int!
+      materia: Materia!
+      anio: Int!
       cuatrimestre: Int!
       notaFinal: Int
       estado: EstadoMateria!
@@ -28,7 +28,8 @@ export const userDefs = () => {
       nombre: String!
       apellido: String!
       email: String!
-      role: UserRole!
+      rol: RolUsuario!
+      anioIngreso: Int
       materias: [MateriaUsuario]
     }
 

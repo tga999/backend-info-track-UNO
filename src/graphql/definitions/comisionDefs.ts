@@ -5,19 +5,40 @@ export const comisionDefs = () => {
       LABORATORIO
     }
 
+    enum Modalidad {
+      VIRTUAL
+      PRESENCIAL
+      SEMIPRESENCIAL
+    }
+
+    enum Dia {
+      LUNES
+      MARTES
+      MIERCOLES
+      JUEVES
+      VIERNES
+      SABADO
+    }
+
     type Salon {
       numero: Int!
       tipo: SalonType!
     }
 
+    type Horario {
+      dia: Dia
+      horaInicio: String
+      horaFin: String
+    }
+
     type Comision {
         id: ID!
         materia: Materia!
-        horario: String!
+        horarios: [Horario]!
         salon: Salon
-        profesores: [Profesor]
-        year: Int!
+        anio: Int!
         cuatrimestre: Int!
+        modalidad: Modalidad!
     }
   `     
 }   

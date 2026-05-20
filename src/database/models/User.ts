@@ -8,9 +8,10 @@ const MateriaUsuarioSchema = new Schema({
   },
   estado: {
     type: String,
+    enum: ["PROMOCIONADA", "APROBADA", "REGULARIZADA", "CURSANDO"],
     required: true
   },
-  year: {
+  anio: {
     type: Number,
     required: true
   },
@@ -41,10 +42,12 @@ const UsuarioSchema = new Schema({
     type: String,
     required: true
   },
-  role: {
+  rol: {
     type: String,
-    default: 'user'
+    default: "USER",
+    enum: ["USER", "ADMIN"]
   },
+  anioIngreso: Number,
   materias: [MateriaUsuarioSchema],
   carreras: [{
       type: Schema.ObjectId,

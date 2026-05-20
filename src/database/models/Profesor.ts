@@ -1,11 +1,25 @@
 import mongoose, { Schema } from "mongoose"
 
+const RatingSchema = new Schema({
+    usuarioId: {
+        type: Schema.ObjectId,
+        ref: 'Usuario'
+    },
+    rate: {
+        type: Number,
+        required: true,
+        min: 1,
+        max: 5
+    },
+    comentario: String,
+    fecha: {
+        type: Date,
+        default: Date.now
+    }
+})
+
 const ProfesorSchema = new Schema({
     nombre: {
-        type: String,
-        required: true
-    },
-    apellido: {
         type: String,
         required: true
     },
@@ -14,37 +28,10 @@ const ProfesorSchema = new Schema({
         required: true, 
         unique: true
     },
-    ratings: [
-        {
-            usuarioId: {
-                type: Schema.ObjectId,
-                ref: 'Usuario'
-            },
-            rate: {
-                type: Number,
-                unique: false,
-                required: true,
-                min: 1,
-                max: 5
-            },
-            comentario: String,
-            fechaDelRate: {
-                type: Date,
-                default: Date.now
-            }
-        }   
-    ],
+    ratings: [RatingSchema],
     linkCampus: {  
         type: String,
         required: true
-    },  
-    ratingCount: {
-        type: Number,
-        default: 0
-    }, 
-    ratingPromedio: {
-        type: Number,
-        default: 0  
     },
     materias: [{
         type: Schema.ObjectId,
