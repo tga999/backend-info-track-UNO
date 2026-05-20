@@ -13,6 +13,7 @@ export const materiaDefs = () => {
 
     type Query {
       materias(search: String, page: Int, limit: Int): [Materia]
+      materia(id: ID!): Materia
     }
 
     type Mutation {

@@ -1,5 +1,5 @@
 import { Materia } from "../../database/models/Materia.js"
-import type { SearchMateriaInput } from "../../types/materia.js"
+import type { IMateria, SearchMateriaInput } from "../../types/materia.js"
 
 export const materiaResolver = () => {
   return {
@@ -19,6 +19,9 @@ export const materiaResolver = () => {
         .limit(limit)
 
         return materias
+      },
+      materia: async (_root: undefined, args: {id: string}) => {
+        return await Materia.findById(args.id)
       }
     },
     Mutation: {

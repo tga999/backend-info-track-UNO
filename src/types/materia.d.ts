@@ -3,3 +3,14 @@ export type SearchMateriaInput = {
   page?: number
   limit?: number
 }
+
+export type IMateria = {
+  id: string
+  nombre: string
+  electiva: boolean
+  promocion: boolean
+  cargaHorariaSemanal?: number
+  cargaHorariaTotal?: number
+  linkCampus?: string
+  linkWhatsapp?: string
+}

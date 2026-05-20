@@ -7,7 +7,7 @@ const PlanEstudioSchema = new Schema({
         required: true
     },
     materiaId: {    
-        type: Schema.ObjectId,
+        type: String,
         ref: 'Materia',
         required: true  
     },
@@ -20,7 +20,7 @@ const PlanEstudioSchema = new Schema({
         required: true
     },
     correlativas: [{
-        type: Schema.ObjectId,
+        type: String,
         ref: 'Materia'
     }]
 })  
